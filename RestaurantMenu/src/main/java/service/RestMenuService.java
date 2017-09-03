@@ -9,6 +9,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -17,6 +18,7 @@ public class RestMenuService implements RestMenuDAO {
     static EntityManagerFactory emf;
     static EntityManager em;
 
+    @Override
     public void fillDB(int n) {
 
         for (int i = 0; i < n; i++) {
@@ -30,7 +32,7 @@ public class RestMenuService implements RestMenuDAO {
             int helf = HELF[RND.nextInt(HELF.length)];
             int discount = DISCOUN[RND.nextInt(DISCOUN.length)];
 
-            RestMenuService rms = new RestMenuService();
+            RestMenuDAO rms = new RestMenuService();
             RestMenu c = new RestMenu(title, price, helf, discount);
             try {
                 rms.add(c);
@@ -63,7 +65,7 @@ public class RestMenuService implements RestMenuDAO {
     }
 
     @Override
-    public void viewClients() {
+    public void viewMenu() {
         emf = Persistence.createEntityManagerFactory("JPAMenu");
         em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -78,7 +80,9 @@ public class RestMenuService implements RestMenuDAO {
         emf.close();
         Main.menu();
     }
-    public void addDish(){
+
+    @Override
+    public void addDish() {
         Scanner sc = new Scanner(System.in);
 
         System.out.println("название блюда: ");
@@ -93,7 +97,7 @@ public class RestMenuService implements RestMenuDAO {
         String discount = sc.nextLine();
         int sdiscount = Integer.parseInt(discount);
 
-        RestMenuService rms = new RestMenuService();
+        RestMenuDAO rms = new RestMenuService();
         RestMenu c = new RestMenu(title, sprice, shelf, sdiscount);
         try {
             rms.add(c);
@@ -103,5 +107,42 @@ public class RestMenuService implements RestMenuDAO {
         Main.menu();
     }
 
+    public void basket() {
+        List<RestMenu> selectedDish = new ArrayList<>();
+        int vol = 0;
+        while (vol <= 1000) {
+            Scanner sn = new Scanner(System.in);
+            System.out.println("id блюда: ");
+            String id = sn.nextLine();
+            int sid = Integer.parseInt(id);
+            emf = Persistence.createEntityManagerFactory("JPAMenu");
+            em = emf.createEntityManager();
+            em.getTransaction().begin();
+            String search = "SELECT c FROM RestMenu c WHERE id =" + sid;
+            Query query = em.createQuery(search, RestMenu.class);
+            List<RestMenu> list1 = (List<RestMenu>) query.getResultList();
+            vol += list1.get(0).getHelf();
+            if(vol <= 1000)
+                selectedDish.add(list1.get(0));
+            else System.out.println("вес привысил 1кг");
+            System.out.println(vol);
+            System.out.println("добавить еще? (1 или 2): ");
 
+            String ab = sn.nextLine();
+            if(ab.equals("1")){
+            }else if(ab.equals("2"))
+                break;
+            else {
+                break;
+            }
+        }
+
+        for (RestMenu c : selectedDish) {
+            System.out.println(c);
+        }
+        em.close();
+        emf.close();
+        Main.menu();
+    }
 }
+

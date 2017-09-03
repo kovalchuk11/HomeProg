@@ -50,7 +50,7 @@ public class RestMenu {
         this.price = price;
     }
 
-    public double getHelf() {
+    public int getHelf() {
         return helf;
     }
 

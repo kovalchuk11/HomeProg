@@ -1,9 +1,8 @@
 package main;
 
-import entity.RestMenu;
+import dao.RestMenuDAO;
 import service.RestMenuService;
-import java.sql.SQLException;
-import java.util.Random;
+
 import java.util.Scanner;
 
 public class Main {
@@ -18,6 +17,7 @@ public class Main {
         System.out.println("1: add random dish");
         System.out.println("2: add dish");
         System.out.println("3: view dish");
+        System.out.println("4: choose dish");
         System.out.print("-> ");
 
         Scanner sc = new Scanner(System.in);
@@ -25,16 +25,20 @@ public class Main {
         switch (s) {
 
             case "1":
-                RestMenuService restMenuService1 = new RestMenuService();
-                restMenuService1.fillDB(5);
+                RestMenuDAO restMenu1 = new RestMenuService();
+                restMenu1.fillDB(5);
                 break;
             case "2":
-                RestMenuService restMenuService2 = new RestMenuService();
-                restMenuService2.addDish();
+                RestMenuDAO restMenu2 = new RestMenuService();
+                restMenu2.addDish();
                 break;
             case "3":
-                RestMenuService restMenuService3 = new RestMenuService();
-                restMenuService3.viewClients();
+                RestMenuDAO restMenu3 = new RestMenuService();
+                restMenu3.viewMenu();
+                break;
+            case "4":
+                RestMenuDAO restMenu4 = new RestMenuService();
+                restMenu4.basket();
                 break;
             default:
                 return;
